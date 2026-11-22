@@ -3,9 +3,11 @@ import { useRef } from 'react'
 import { BadgeCheck, Camera, FileCheck2, MapPin, MessageCircle, Star } from 'lucide-react'
 import { motion, useMotionTemplate, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { entrance } from '../animation'
-import { listingUrl, profileUrl, visitsStart } from '../content'
+import { listingUrl, maxUrl, profileUrl, telegramUrl, visitsStart } from '../content'
 import portrait from '../assets/dmitry.webp'
 import portraitSmall from '../assets/dmitry-small.webp'
+import maxLogo from '../assets/max.webp'
+import telegramLogo from '../assets/telegram.svg'
 import OrbitGlyph from './OrbitGlyph'
 
 export default function Hero({ contactRef }: { contactRef: RefObject<HTMLAnchorElement | null> }) {
@@ -91,6 +93,16 @@ export default function Hero({ contactRef }: { contactRef: RefObject<HTMLAnchorE
           <div><strong>Дмитрий</strong><span>Представитель собственников в Чите</span></div>
           <a href={profileUrl} aria-label="Профиль Дмитрия на Авито, рейтинг 4,8">
             <Star size={15} aria-hidden="true" /> 4,8 на Авито
+          </a>
+        </div>
+        <div className="portrait-messengers" role="group" aria-label="Связь в мессенджерах">
+          <a href={telegramUrl} aria-label="Написать в Telegram">
+            <img src={telegramLogo} width="24" height="24" alt="" />
+            Telegram
+          </a>
+          <a href={maxUrl} aria-label="Написать в MAX">
+            <img src={maxLogo} width="24" height="24" alt="" />
+            MAX
           </a>
         </div>
       </motion.div>
