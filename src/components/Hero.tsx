@@ -1,11 +1,12 @@
-import type { RefObject } from 'react'
+import type { PointerEvent, RefObject } from 'react'
 import { useRef } from 'react'
 import { BadgeCheck, Camera, FileCheck2, MapPin, MessageCircle, Star } from 'lucide-react'
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { motion, useMotionTemplate, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { entrance } from '../animation'
 import { listingUrl, profileUrl, visitsStart } from '../content'
 import portrait from '../assets/dmitry.webp'
 import portraitSmall from '../assets/dmitry-small.webp'
+import OrbitGlyph from './OrbitGlyph'
 
 export default function Hero({ contactRef }: { contactRef: RefObject<HTMLAnchorElement | null> }) {
   const artworkRef = useRef<HTMLDivElement>(null)
@@ -15,6 +16,17 @@ export default function Hero({ contactRef }: { contactRef: RefObject<HTMLAnchorE
     offset: ['start start', 'end start'],
   })
   const portraitY = useTransform(scrollYProgress, [0, 1], [0, -8])
+  const lightX = useSpring(14, { stiffness: 125, damping: 24 })
+  const lightY = useSpring(11, { stiffness: 125, damping: 24 })
+  const light = useMotionTemplate`radial-gradient(circle at ${lightX}% ${lightY}%, #a2e5db55, transparent 66%)`
+
+  function followPointer(event: PointerEvent<HTMLDivElement>) {
+    if (reduceMotion || event.pointerType !== 'mouse') return
+
+    const bounds = event.currentTarget.getBoundingClientRect()
+    lightX.set(100 * (event.clientX - bounds.left) / bounds.width)
+    lightY.set(100 * (event.clientY - bounds.top) / bounds.height)
+  }
 
   function appear(delay: number) {
     return {
@@ -53,7 +65,17 @@ export default function Hero({ contactRef }: { contactRef: RefObject<HTMLAnchorE
         )}
       </div>
 
-      <motion.div className="hero-visual" ref={artworkRef} {...appear(0.21)}>
+      <motion.div className="hero-glyph" {...appear(0.3)}>
+        <OrbitGlyph featured />
+      </motion.div>
+      <motion.div
+        className="hero-visual"
+        ref={artworkRef}
+        onPointerMove={followPointer}
+        onPointerLeave={() => { lightX.set(14); lightY.set(11) }}
+        {...appear(0.21)}
+      >
+        <motion.span className="portrait-light" style={{ background: light }} aria-hidden="true" />
         <motion.figure className="hero-media" style={reduceMotion ? undefined : { y: portraitY }}>
           <img
             src={portrait}

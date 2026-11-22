@@ -3,6 +3,7 @@ import { Building2, CarFront, House } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ease } from '../animation'
 import { listingUrl } from '../content'
+import OrbitGlyph, { type PropertyKind } from './OrbitGlyph'
 
 const properties = [
   {
@@ -26,7 +27,7 @@ const properties = [
     icon: CarFront,
     intro: 'Напишите район или название кооператива, размеры и оформлен ли объект в собственность.',
   },
-]
+] as const satisfies ReadonlyArray<{ id: PropertyKind; title: string; tab: string; icon: typeof House; intro: string }>
 
 export default function PropertyGuide() {
   const [active, setActive] = useState(0)
@@ -86,13 +87,17 @@ export default function PropertyGuide() {
             <AnimatePresence initial={false} mode="wait">
               <motion.div
                 key={property.id}
-                initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduceMotion ? undefined : { opacity: 0, y: -5 }}
-                transition={{ duration: reduceMotion ? 0 : 0.2, ease }}
+                className="property-panel-content"
+                initial={reduceMotion ? false : { opacity: 0, x: 18 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, x: -12 }}
+                transition={{ duration: reduceMotion ? 0 : 0.32, ease }}
               >
-                <h3>{property.title}</h3>
-                <p>{property.intro}</p>
+                <div>
+                  <h3>{property.title}</h3>
+                  <p>{property.intro}</p>
+                </div>
+                <OrbitGlyph kind={property.id} />
               </motion.div>
             </AnimatePresence>
             <a className="quiet-link" href={listingUrl}>Обсудить на Авито</a>
